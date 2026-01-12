@@ -181,7 +181,7 @@ namespace SFM
 			phase += pitch;
 
 			if (phase > 1.f)
-				phase -= 1.f
+				phase -= 1.f;
 
 			return oscPhase;
 		}
