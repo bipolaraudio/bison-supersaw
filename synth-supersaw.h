@@ -28,7 +28,7 @@ namespace SFM
 	constexpr unsigned kNumSupersawOscillators = 7;
 
 	// Relation between frequencies (slightly asymmetric)
-	// Centre oscillator moved from position 4 to 1
+	// Centre (fundamental) moved from position 4 to 1
 	constexpr float kSupersawRelative[kNumSupersawOscillators] = 
 	{
 /*
@@ -116,13 +116,13 @@ namespace SFM
 
 		SFM_INLINE float Sample()
 		{
-			// Centre oscillator
+			// Fundamental
 			const float main = Oscillate(0, false);
 
-			// Side oscillators
+			// Side bands
 			float sides = 0.f;
 			for (unsigned iOsc = 1; iOsc < kNumSupersawOscillators; ++iOsc)
-				sides += Oscillate(iOsc, (iOsc < kNumSupersawOscillators-1) ? true : false);
+				sides += Oscillate(iOsc, true);
 
 			float signal = main*m_mainMix + sides*m_sideMix;
 
@@ -181,7 +181,7 @@ namespace SFM
 			phase += pitch;
 
 			if (phase > 1.f)
-				phase -= 1.f;q
+				phase -= 1.f
 
 			return oscPhase;
 		}
