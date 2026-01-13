@@ -25,8 +25,7 @@ the entire patch.
 
 - Performance.
 
-It performs just fine though if need be it can of course be optimized according to target hardware; we hardly use any SIMD code in FM. BISON itself, 
-in part because we never quite reached the point where it was necessary and over time, in part, because not doing so sustains a better degree of readability and ease of alteration.
+It performs just fine though if need be it can of course be optimized according to target hardware; we hardly use any SIMD code in FM. BISON itself, in part because we never quite reached the point where it was necessary and over time, in part, because not doing so sustains a better degree of readability and ease of alteration.
 
 Calculating the polynomial into a reasonable coarse table is not only essential for fast real-time alterations of the oscillator's paramaters, even the table's modest size 
 and linear interpolation between values actually means the result comes a bit closer to the JP-8000, since you guessed it, those settings are controlled by 7-bit discrete controls 
@@ -38,15 +37,14 @@ Video: https://youtu.be/XM_q5T7wTpQ - a highly recommended watch!
 
 As it turns out the actual JP-8000 (and 8080) actually employ a "surprisingly" naive implementation *but* do so at twice the sample rate to combat aliasing, among other differences.
 
+Other than that, if you give it a proper look: what happens here is *not* much different *nor* stupidly inefficient.
+
 We have another approach to combat aliasing without oversampling: first of all we source our sawtooths from a bandlimited oscillator (oscPolyPhase()) and on top subtract a pure sine from 
 the sidebands to curtail harmonic distortion further. 
 
-Oversampling *and* employing what we do will definitely do away with some of the grit you find in Roland's iconic sound and it complicates the oscillator in such a way that we actually
-stand to lose performance and accuracy. In other words: it just isn't the same thing, much like their sound is chiefly defined not only by the supersaw but by the entire DSP chain 
-(filters, envelopes, you name it) and that is something we explicitly are not in the business of replicating.
+Oversampling *and* employing what we do will definitely do away with some of the grit you find in Roland's iconic sound and it complicates the oscillator in such a way that we actually stand to lose performance and accuracy. In other words: it just isn't the same thing, much like their sound is chiefly defined not only by the supersaw but by the entire DSP chain (filters, envelopes, you name it) and that is something we explicitly are not in the business of replicating.
 
-Why? Because this is part of our *own* instrument. Given the availability, certainly now, of accurate to perfect emulation I suggest you do the same: take the unique footprint and complement 
-it with your own ideas, the virtual instrument / plug-in market is saturated with clones and emulators as it is; not unlike all those hardware boutique clones :-)
+Why? Because this is part of our *own* instrument. Given the availability, certainly now, of accurate to perfect emulation I suggest you do the same: take the unique footprint and complement it with your own ideas, the virtual instrument / plug-in market is saturated with clones and emulators as it is; not unlike all those hardware boutique clones :-)
 
 That said, I will in due time write another version of this oscillator that more closely emulates the actual JP-8000, including oversampling and matching fixed point (integer) arithmetic.
 

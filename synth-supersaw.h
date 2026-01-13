@@ -23,7 +23,7 @@
 	  right call for the hardware FM. BISON is intended to run on.
 	- Both implementations (the actual truth and this adaptation) offer an amount of grit because not all 
 	  artifacts are eliminated in either implementation. Another important key to this particular oscillator is
-	  the dissonanance at the top end of the detune curve; both represent it well and true to form as far as I am
+	  the dissonance at the top end of the detune curve; both represent it well and true to form as far as I am
 	  concerned.
 	- When all is said and done this oscillator is only as good as the DSP chain it is part of and the sound
 	  designer that makes the patch.
@@ -253,6 +253,7 @@ namespace SFM
 		SFM_INLINE void SetMix(float mix /* [0..1] */)
 		{
 			// JP-8000 ratios (according to Adam's thesis)
+			// FIXME (potential): I'd have to look a the *entire* Roland implementation if I were to simplify this
 			SFM_ASSERT_NORM(mix);
 			m_mainMix = -0.55366f*mix + 0.99785f;
 			m_sideMix = -0.73764f*mix*mix + 1.2841f*mix + 0.044372f;
