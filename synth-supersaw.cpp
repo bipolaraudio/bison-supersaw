@@ -12,7 +12,8 @@ namespace SFM
 	// Keep MIDI precision (128 step detune control)
 	constexpr unsigned kDetuneSteps = 128;
 
-	alignas(16) static float s_detuneTab[kDetuneSteps];
+	// One extra entry to spare a range check/branch in SampleDetuneTab()
+	alignas(16) static float s_detuneTab[kDetuneSteps+1];
 
 	/* static */ void Supersaw::CalculateDetuneTable()
 	{
@@ -24,6 +25,8 @@ namespace SFM
 			const float detune = (float) SampleDetuneCurve(delta*iStep);
 			s_detuneTab[iStep] = detune;
 		}
+		
+		s_detuneTab[kDetuneSteps] = s_detuneTab[kDetuneSteps-1]; // No reason to extrapolate
 	}
 
 	// FIXME: summing likely causes (some) numerical instability
