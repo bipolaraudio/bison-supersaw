@@ -7,6 +7,7 @@
 	- Initial ref.: https://pdfs.semanticscholar.org/1852/250068e864215dd7f12755cf00636868a251.pdf (copy in repository)
 	- New (post impl.) ref.: https://youtu.be/XM_q5T7wTpQ ('From Silicon to Darude' presentation by 'The usual suspects')
 	- Free running: all phases are updated by Bison::Render() if the oscillator is not being used
+	- Phases are all [0..1]
 	
 	FIXME:
 		- Not in [-1..1] range if I recall correctly, its obviously a bit like mixing voices, but FM. BISON's
@@ -219,6 +220,12 @@ namespace SFM
 			const float phase = Tick(iOsc);
 			
 			float polySaw = oscPolySaw(phase, m_pitch[iOsc]);
+
+			// Thought I'd explain this: by subtracting the pure sine from the pseudo-bandlimited saw
+			// from each of the side bands retains their higher order harmonics and thus the grit of
+			// the oscillator remains uncompromised; also as opposed to a high pass filter, especially
+			// without oversampling like Roland does, more effectively stops lower frequencies of the
+			// saws muddying each other
 			if (subtractPureSine)
 				polySaw -= oscSine(phase);
 			
@@ -237,7 +244,7 @@ namespace SFM
 				m_pitch[iOsc] = pitch;
 			}
 
-			// Cut lower end (as proposed by Szabo)
+			// Cut lower end (as proposed by Szabo and done by Roland)
 			// constexpr float Q = kNormalGainAtCutoff; // 0.707
 			// m_HPF.setBiquad(bq_type_highpass, frequency/m_sampleRate, Q, 0.f);
 		}
