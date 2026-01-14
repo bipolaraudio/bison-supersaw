@@ -23,7 +23,7 @@
 	  right call for the hardware FM. BISON is intended to run on.
 	- Both implementations (the actual truth and this adaptation) offer an amount of grit because not all 
 	  artifacts are eliminated in either implementation. Another important key to this particular oscillator is
-	  the dissonance at the top end of the detune curve; both represent it well and true to form as far as I am
+	  the dissonance at the top end of the detune curve; this represents it well and true to form as far as I am
 	  concerned.
 	- When all is said and done this oscillator is only as good as the DSP chain it is part of and the sound
 	  designer that makes the patch.

@@ -13,6 +13,7 @@ namespace SFM
 	constexpr unsigned kDetuneSteps = 128;
 
 	// One extra entry to spare a range check/branch in SampleDetuneTab()
+	// Given the hardware my money says the JP-8000 also uses a LUT :-)
 	alignas(16) static float s_detuneTab[kDetuneSteps+1];
 
 	/* static */ void Supersaw::CalculateDetuneTable()
@@ -28,6 +29,8 @@ namespace SFM
 		
 		s_detuneTab[kDetuneSteps] = s_detuneTab[kDetuneSteps-1]; // No reason to extrapolate
 	}
+
+#if 0 
 
 	// FIXME: summing likely causes (some) numerical instability
 	/* static */ double Supersaw::SampleDetuneCurve(double detune)
@@ -46,6 +49,44 @@ namespace SFM
 			(138150.6761080548*pow(detune, 8.0)) + (106649.6679158292*pow(detune, 7.0)) - (53046.9642751875*pow(detune, 6.0))  + 
 			(17019.9518580080*pow(detune, 5.0))  - (3425.0836591318*pow(detune, 4.0))   + (404.2703938388*pow(detune, 3.0))    - 
 			(24.1878824391*pow(detune, 2.0))     + (0.6717417634*detune)                + 0.0030115596;		
+	}
+
+#endif
+
+	// Verbose, rolled, version of the above with the powers factored out for improved numerical stability
+	// In the end the difference both performance and stability wise is almost zilch, but I'll keep this for now
+	/* static */ double Supersaw::SampleDetuneCurve(double detune)
+	{
+		SFM_ASSERT_NORM(detune);
+
+		// Adam's coefficients
+		constexpr size_t kOrder = 11;
+		constexpr double coefficients[kOrder+1] = {
+			 0.0030115596, // Constant term
+			 0.6717417634, 
+			-24.1878824391, 
+			 404.2703938388, 
+			-3425.0836591318, 
+			 17019.9518580080, 
+			-53046.9642751875, 
+			 106649.6679158292, 
+			-138150.6761080548, 
+			 111363.4808729368, 
+			-50818.8652045924, 
+			 10028.7312891634
+		};
+
+		double result = coefficients[0];
+		double term = detune;
+
+		// Can be written in reverse using a single multiply and one running sum (slightly less precise)
+		for (size_t iOrder = 1; iOrder <= kOrder; ++iOrder)
+		{
+			result += coefficients[iOrder] * term;
+			term   *= detune;
+		}
+
+		return result;
 	}
 
 	/* static */ float Supersaw::SampleDetuneTable(float detune)

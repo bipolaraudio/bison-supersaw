@@ -15,32 +15,30 @@ One thing though: high detune causes that sweet, sweet dissonance <3
 
 - How to apply?
 
-It fares especially well in a patch (FM. BISON does this with ease) that has multiple of these oscillators plus some pure sines or filtered saws to thicken it all up. 
-I could go on and sell even more of our ideas, but instead you be the sound designer/engineer yourself.
-
-This is the basic ingredient.
+It fares especially well in a patch (FM. BISON does this with ease) that has multiple of these oscillators plus some pure sines or filtered saws to thicken it all up. I could go on and sell even more of our ideas, but instead you be the sound designer/engineer yourself.
 
 In the end an oscillator like this is only as good as the DSP chain it is a part of and the artist who engineers
 the entire patch.
+
+This is the basic ingredient.
 
 - Performance.
 
 It performs just fine though if need be it can of course be optimized according to target hardware; we hardly use any SIMD code in FM. BISON itself, in part because we never quite reached the point where it was necessary and over time, in part, because not doing so sustains a better degree of readability and ease of alteration.
 
-Calculating the polynomial into a reasonable coarse table is not only essential for fast real-time alterations of the oscillator's paramaters, even the table's modest size 
-and linear interpolation between values actually means the result comes a bit closer to the JP-8000, since you guessed it, those settings are controlled by 7-bit discrete controls 
-on the instrument itself (MIDI).
+Calculating the polynomial into a reasonable coarse table is not only essential for fast real-time alterations of the oscillator's paramaters, even the table's modest size and linear interpolation between values actually means the result comes a bit closer to the JP-8000, since you guessed it, those settings are controlled by 7-bit discrete controls on the instrument itself (MIDI).
 
 - A review after 'From Silicon to Darude Sand-storm' presentation by 'The usual suspects'
 
 Video: https://youtu.be/XM_q5T7wTpQ - a highly recommended watch!
 
-As it turns out the actual JP-8000 (and 8080) actually employ a "surprisingly" naive implementation *but* do so at twice the sample rate to combat aliasing, among other differences.
+Takeaway: sticking with Szabo's numbers to approach Roland's sound in combination with our own more modern yet also imperfect (read: intentionally not squeaky clean) implementation makes sense given the quite different problem domain here (in a broad sense).
+
+As it turns out the actual JP-8000 (and 8080) actually employ a "surprisingly" naive implementation *but* do so at twice the sample rate to combat aliasing, among other differences. I'd offer that might not have been their first choice, but given certain constraints definitely a good one.
 
 Other than that, if you give it a proper look: what happens here is *not* much different *nor* stupidly inefficient.
 
-We have another approach to combat aliasing without oversampling: first of all we source our sawtooths from a bandlimited oscillator (oscPolyPhase()) and on top subtract a pure sine from 
-the sidebands to curtail harmonic distortion further. 
+We have another approach to combat aliasing without oversampling: first of all we source our sawtooths from a bandlimited oscillator (oscPolyPhase()) and on top subtract a pure sine from the sidebands to curtail harmonic distortion further. 
 
 Oversampling *and* employing what we do will definitely do away with some of the grit you find in Roland's iconic sound and it complicates the oscillator in such a way that we actually stand to lose performance and accuracy. In other words: it just isn't the same thing, much like their sound is chiefly defined not only by the supersaw but by the entire DSP chain (filters, envelopes, you name it) and that is something we explicitly are not in the business of replicating.
 
