@@ -111,13 +111,14 @@ namespace SFM
 		Supersaw() : 
 			m_sampleRate(1) 
 		{
-			// Initialize phases with values between [0..1] and let's hope that at least a few of them are irrational
+			// Initialize phases with values between [0..1] with pseudo-irrational offsets
+			// This is chiefly necessary for FM. BISON, not the algorithm itself, so long
+			// as it is based on true free-running oscillators
 			for (auto &phase : m_phase)
-				phase = oscSine(0.11f + 0.1f*mt_randf()); // Irrational enough (TM)
+				phase = oscSine(0.11f + 0.1f*mt_randf()); // Good enough (TM)
 
-				// Generating "more" irrational values can for ex. be done by accumulation, but end of day
-				// any IEEE compliant float is rational :-)
-				// This sounds right when using free-running oscillators.
+				// Generating "more" irrational values can for ex. be done by accumulation, 
+				// but ultimately any IEEE compliant float is rational :-)
 		}
 
 		void Initialize(float frequency, unsigned sampleRate, float detune, float mix);
@@ -161,7 +162,7 @@ namespace SFM
 			return signal;
 		}
 		
-		// Advance phase by a number of samples (used by Bison::Render() for true 'free running') <-- FIXME!
+		// FIXME: used by Bison::Render() to emulate (pseudo) free running oscillators
 		SFM_INLINE void Skip(unsigned numSamples)
 		{
 			for (unsigned iOsc = 0; iOsc < kNumSupersawOscillators; ++iOsc)
