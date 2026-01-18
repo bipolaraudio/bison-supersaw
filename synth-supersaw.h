@@ -6,13 +6,11 @@
 
 	- Initial ref.: https://pdfs.semanticscholar.org/1852/250068e864215dd7f12755cf00636868a251.pdf (copy in repository)
 	- New (post impl.) ref.: https://youtu.be/XM_q5T7wTpQ ('From Silicon to Darude' presentation by 'The usual suspects')
-	- Free running: all phases are updated by Bison::Render() if the oscillator is not being used
-	- Phases are all [0..1]
+	- Pseudo free-running: all phases are updated by Bison::Render() when oscillator is not active
 	
 	FIXME:
-		- Not in [-1..1] range if I recall correctly, its obviously a bit like mixing voices, but FM. BISON's
-		  render has ample headroom for situations like this; I can normalize (not just flatten) if I want to
-		- Too much implementation lives in this header file?
+		- Output not in [-1..1] range AFAIR, but FM. BISON's render logic has headroom 
+		- Too much implementation lives in this header file
 
 	For now I'm picking the single precision version since (most of) of FM. BISON uses that internally,
 	and given the final word on the real Roland implementation, well.. :-)
@@ -111,13 +109,14 @@ namespace SFM
 		Supersaw() : 
 			m_sampleRate(1) 
 		{
-			// Initialize phases with values between [0..1] and let's hope that at least a few of them are irrational
+			// Initialize phases with values between [0..1] with pseudo-irrational offsets
+			// This is chiefly necessary for FM. BISON, not the algorithm itself, so long
+			// as it is based on true free-running oscillators
 			for (auto &phase : m_phase)
-				phase = oscSine(0.11f + 0.1f*mt_randf()); // Irrational enough (TM)
+				phase = oscSine(0.11f + 0.1f*mt_randf()); // Good enough (TM)
 
-				// Generating "more" irrational values can for ex. be done by accumulation, but end of day
-				// any IEEE compliant float is rational :-)
-				// This sounds right when using free-running oscillators.
+				// Generating "more" irrational values can for ex. be done by accumulation, 
+				// but ultimately any IEEE compliant float is rational :-)
 		}
 
 		void Initialize(float frequency, unsigned sampleRate, float detune, float mix);
@@ -161,7 +160,7 @@ namespace SFM
 			return signal;
 		}
 		
-		// Advance phase by a number of samples (used by Bison::Render() for true 'free running') <-- FIXME!
+		// FIXME: used by Bison::Render() to emulate (pseudo) free running oscillators
 		SFM_INLINE void Skip(unsigned numSamples)
 		{
 			for (unsigned iOsc = 0; iOsc < kNumSupersawOscillators; ++iOsc)
