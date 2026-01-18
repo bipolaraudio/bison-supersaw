@@ -6,13 +6,11 @@
 
 	- Initial ref.: https://pdfs.semanticscholar.org/1852/250068e864215dd7f12755cf00636868a251.pdf (copy in repository)
 	- New (post impl.) ref.: https://youtu.be/XM_q5T7wTpQ ('From Silicon to Darude' presentation by 'The usual suspects')
-	- Free running: all phases are updated by Bison::Render() if the oscillator is not being used
-	- Phases are all [0..1]
+	- Pseudo free-running: all phases are updated by Bison::Render() when oscillator is not active
 	
 	FIXME:
-		- Not in [-1..1] range if I recall correctly, its obviously a bit like mixing voices, but FM. BISON's
-		  render has ample headroom for situations like this; I can normalize (not just flatten) if I want to
-		- Too much implementation lives in this header file?
+		- Output not in [-1..1] range AFAIR, but FM. BISON's render logic has headroom 
+		- Too much implementation lives in this header file
 
 	For now I'm picking the single precision version since (most of) of FM. BISON uses that internally,
 	and given the final word on the real Roland implementation, well.. :-)
